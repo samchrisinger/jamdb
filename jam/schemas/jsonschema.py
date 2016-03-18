@@ -13,8 +13,11 @@ class JSONSchema(BaseSchema):
     def validate_schema(self, schema):
         try:
             jsonschema.Draft4Validator.check_schema(schema)
-        except jsonschema.SchemaError:
-            raise exceptions.InvalidSchema('jsonschema')
+        except jsonschema.SchemaError as e:
+            raise exceptions.InvalidSchema('jsonschema', {
+                'reason': e.message,
+                'path': '/'.join(e.path)
+            })
 
     def validate(self, data):
         # TODO Translate to custom exceptions

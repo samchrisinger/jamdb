@@ -138,8 +138,11 @@ class InvalidSchema(JamException):
     title = 'Invalid schema'
     status = http.client.BAD_REQUEST
 
-    def __init__(self, type_):
-        super().__init__(detail='The supplied data was an invalid {} schema'.format(type_))
+    def __init__(self, type_, context=None):
+        detail = 'The supplied data was an invalid {} schema'.format(type_)
+        if context:
+            detail += '. Original validation error:\n "{reason}" \n at path: {path}'.format(**context)
+        super().__init__(detail=detail)
 
 
 class InvalidPermission(JamException):
